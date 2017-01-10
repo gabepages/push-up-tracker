@@ -21963,6 +21963,11 @@
 	      'LIEmailValue': '',
 	      'LIPasswordValue': ''
 	    };
+	    firebase.auth().onAuthStateChanged(function (user) {
+	      if (user) {
+	        props.changeScreenState("dashboard");
+	      }
+	    });
 	    return _this;
 	  }
 	
@@ -22046,8 +22051,6 @@
 	  }, {
 	    key: 'signUp',
 	    value: function signUp(e) {
-	      var _this3 = this;
-	
 	      e.preventDefault();
 	      var email = this.state.SUEmailValue;
 	      var password = this.state.SUPasswordValue;
@@ -22056,34 +22059,17 @@
 	        var errorMessage = error.message;
 	        alert(errorCode, errorMessage);
 	      });
-	      firebase.auth().onAuthStateChanged(function (user) {
-	        if (user) {
-	          _this3.props.changeScreenState("dashboard");
-	        }
-	      });
 	    }
 	  }, {
 	    key: 'login',
 	    value: function login(e) {
-	      var _this4 = this;
-	
 	      e.preventDefault();
 	      var email = this.state.LIEmailValue;
 	      var password = this.state.LIPasswordValue;
 	      firebase.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
 	        var errorCode = error.code;
 	        var errorMessage = error.message;
-	        if (errorCode === 'auth/wrong-password') {
-	          alert('Wrong password.');
-	        } else {
-	          alert(errorMessage);
-	        }
-	        console.log(error);
-	      });
-	      firebase.auth().onAuthStateChanged(function (user) {
-	        if (user) {
-	          _this4.props.changeScreenState("dashboard");
-	        }
+	        alert(errorCode, errorMessage);
 	      });
 	    }
 	  }]);
@@ -22097,7 +22083,7 @@
 /* 184 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	"use strict";
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -22125,79 +22111,89 @@
 	
 	    var _this = _possibleConstructorReturn(this, (Dashboard.__proto__ || Object.getPrototypeOf(Dashboard)).call(this, props));
 	
+	    var user = props.firebase.auth().currentUser;
+	    var database = props.firebase.database().ref('users/' + user.uid + "/pushUpStats");
 	    _this.state = {
-	      currentUser: null,
-	      database: null,
-	      inputStartValue: undefined,
-	      hasStartValue: false
+	      user: user,
+	      textValue: '',
+	      database: database,
+	      stats: null
 	    };
 	    return _this;
 	  }
 	
 	  _createClass(Dashboard, [{
-	    key: 'componentDidMount',
+	    key: "componentDidMount",
 	    value: function componentDidMount() {
-	      var firebase = this.props.firebase;
-	      var user = firebase.auth().currentUser;
-	      var database = firebase.database();
-	      var startValue = void 0,
-	          hasStartValue = void 0;
-	      firebase.database().ref('users/' + user.uid).once('value', function (snapshot) {
-	        startValue = snapshot.val().pushUpStartValue;
-	      });
-	      if (startValue == null) {
-	        hasStartValue = false;
-	      } else {
-	        hasStartValue = true;
-	      }
-	      this.setState({
-	        currentUser: user,
-	        database: database,
-	        hasStartValue: hasStartValue,
-	        startValue: startValue
+	      var _this2 = this;
+	
+	      this.state.database.once("value").then(function (snapshot) {
+	        if (snapshot.val() != null) {
+	          _this2.setState({
+	            stats: snapshot.val()
+	          });
+	        }
 	      });
 	    }
 	  }, {
-	    key: 'render',
+	    key: "render",
 	    value: function render() {
-	      if (this.state.currentUser) {
-	        var user = this.state.currentUser;
-	        console.log(this.state);
+	      var _this3 = this;
+	
+	      if (this.state.user) {
 	        return _react2.default.createElement(
-	          'div',
+	          "div",
 	          null,
 	          _react2.default.createElement(
-	            'h1',
+	            "h1",
 	            null,
-	            'Push-Up Tracker'
+	            "Push-Up Tracker"
 	          ),
 	          _react2.default.createElement(
-	            'h3',
+	            "h3",
 	            null,
-	            'Welcome ',
-	            user.email
+	            "Welcome ",
+	            this.state.user.email
 	          ),
-	          _react2.default.createElement(StartValue, { startValue: this.state.startValue, hasStartValue: this.state.hasStartValue, setStartValue: this.setStartValue.bind(this), handleValueChange: this.handleValueChange.bind(this) })
+	          _react2.default.createElement(
+	            "button",
+	            { onClick: this.signOutUser.bind(this) },
+	            "Sign Out"
+	          ),
+	          _react2.default.createElement(StartValue, {
+	            updateTextValue: function updateTextValue(e) {
+	              return _this3.setState({ textValue: e.target.value });
+	            },
+	            textValue: this.state.textValue,
+	            setStartValue: this.setStartValue.bind(this),
+	            stats: this.state.stats,
+	            setStats: this.setStats,
+	            database: this.state.database
+	          })
 	        );
 	      }
-	      return _react2.default.createElement('div', null);
+	      return _react2.default.createElement("div", null);
 	    }
 	  }, {
-	    key: 'handleValueChange',
-	    value: function handleValueChange(e) {
-	      this.setState({ inputStartValue: e.target.value });
-	    }
-	  }, {
-	    key: 'setStartValue',
-	    value: function setStartValue(e) {
-	      e.preventDefault();
-	      var uid = this.state.currentUser.uid;
-	      this.state.database.ref('users/' + uid).set({
-	        pushUpStartValue: this.state.inputStartValue
+	    key: "signOutUser",
+	    value: function signOutUser() {
+	      var self = this;
+	      firebase.auth().signOut().then(function () {
+	        self.props.changeScreenState('login');
+	      }, function (error) {
+	        alert(error);
 	      });
-	      this.setState({
-	        hasStartvalue: true,
-	        startValue: this.state.inputStartValue
+	    }
+	  }, {
+	    key: "setStartValue",
+	    value: function setStartValue(e) {
+	      var _this4 = this;
+	
+	      e.preventDefault();
+	      this.state.database.set({
+	        startingPushUp: this.state.textValue
+	      }).then(function () {
+	        return _this4.forceUpdate();
 	      });
 	    }
 	  }]);
@@ -22217,34 +22213,76 @@
 	  }
 	
 	  _createClass(StartValue, [{
-	    key: 'render',
+	    key: "render",
 	    value: function render() {
-	      console.log('hasStartvalue', this.props.hasStartValue);
-	      if (this.props.hasStartValue == true) {
+	
+	      if (this.props.stats !== null) {
 	        return _react2.default.createElement(
-	          'h3',
+	          "h3",
 	          null,
-	          'Start Value: ',
-	          this.props.startValue
+	          "Starting Value: ",
+	          this.props.stats.startingPushUp
 	        );
 	      }
 	      return _react2.default.createElement(
-	        'form',
+	        "form",
 	        { onSubmit: this.props.setStartValue },
-	        _react2.default.createElement('input', {
-	          type: 'text',
-	          value: this.props.inputStartValue,
-	          onChange: this.props.handleValueChange
+	        _react2.default.createElement("input", {
+	          type: "text",
+	          value: this.props.textValue,
+	          onChange: this.props.updateTextValue,
+	          placeholder: "Staring # of Push-Ups"
 	        }),
-	        _react2.default.createElement('input', {
-	          type: 'submit',
-	          value: 'Set'
+	        _react2.default.createElement("input", {
+	          type: "submit",
+	          value: "Set"
 	        })
 	      );
 	    }
 	  }]);
 	
 	  return StartValue;
+	}(_react2.default.Component);
+	
+	var LastValue = function (_React$Component3) {
+	  _inherits(LastValue, _React$Component3);
+	
+	  function LastValue(props) {
+	    _classCallCheck(this, LastValue);
+	
+	    return _possibleConstructorReturn(this, (LastValue.__proto__ || Object.getPrototypeOf(LastValue)).call(this, props));
+	  }
+	
+	  _createClass(LastValue, [{
+	    key: "render",
+	    value: function render() {
+	
+	      if (this.props.stats !== null) {
+	        return _react2.default.createElement(
+	          "h3",
+	          null,
+	          "Starting Value: ",
+	          this.props.stats.startingPushUp
+	        );
+	      }
+	      return _react2.default.createElement(
+	        "form",
+	        { onSubmit: this.props.setStartValue },
+	        _react2.default.createElement("input", {
+	          type: "text",
+	          value: this.props.textValue,
+	          onChange: this.props.updateTextValue,
+	          placeholder: "Staring # of Push-Ups"
+	        }),
+	        _react2.default.createElement("input", {
+	          type: "submit",
+	          value: "Set"
+	        })
+	      );
+	    }
+	  }]);
+	
+	  return LastValue;
 	}(_react2.default.Component);
 
 /***/ }

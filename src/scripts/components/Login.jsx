@@ -10,8 +10,14 @@ export default class Login extends React.Component {
       'LIEmailValue': '',
       'LIPasswordValue': ''
     }
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        props.changeScreenState("dashboard");
+      }
+    });
   }
  render() {
+
    return (
     <div>
       <h1>Push-up Tracker</h1>
@@ -61,14 +67,9 @@ export default class Login extends React.Component {
    var email = this.state.SUEmailValue;
    var password = this.state.SUPasswordValue;
    firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
-    var errorCode = error.code;
-    var errorMessage = error.message;
-    alert(errorCode, errorMessage);
-  });
-  firebase.auth().onAuthStateChanged(user => {
-    if(user) {
-      this.props.changeScreenState("dashboard");
-    }
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      alert(errorCode, errorMessage);
   });
 
  }
@@ -79,18 +80,7 @@ export default class Login extends React.Component {
     firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
       var errorCode = error.code;
       var errorMessage = error.message;
-      if (errorCode === 'auth/wrong-password') {
-        alert('Wrong password.');
-      } else {
-        alert(errorMessage);
-      }
-      console.log(error);
+      alert(errorCode, errorMessage);
     });
-    firebase.auth().onAuthStateChanged(user => {
-      if(user) {
-        this.props.changeScreenState("dashboard");
-      }
-    });
-
  }
 }
