@@ -1,21 +1,2 @@
-# Webpack-Setup
-
-##Setup
-####If you dont have webpack installed already, run this command:
-
-```sh
-npm install webpack -g
-```
-
-##Getting Started
-
-```sh
-npm install
-```
-
-####To run the webpack watch, run this command:
-
-```sh
-webpack -w
-```
-# push-up-tracker
+# Push-Up Tracker
+## Track how many push-ups you do, by comparing your current push-up status to your 1st day of push-ups.
