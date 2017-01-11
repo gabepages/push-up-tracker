@@ -19,45 +19,54 @@ export default class Login extends React.Component {
  render() {
 
    return (
-    <div>
-      <h1>Push-up Tracker</h1>
-      <div>
-        <h2>Sign Up</h2>
-        <form onSubmit={this.signUp.bind(this)}>
-          <input
-            type='email'
-            value={this.state.SUEmailValue}
-            onChange={(e) => this.setState({ SUEmailValue: e.target.value })}
-            />
-          <input
-            type='password'
-            value={this.state.SUPasswordValue}
-            onChange={(e) => this.setState({ SUPasswordValue: e.target.value })}
-            />
-          <input
-            type='submit'
-            value='Sign Up'
-            />
-        </form>
-      </div>
-      <div>
-        <h2>Login</h2>
-          <form onSubmit={this.login.bind(this)}>
+    <div className='container'>
+      <div className='row'>
+        <div className='col l4 offset-l4 s6 offset-s3 margin-tb'>
+          <h4>Sign Up</h4>
+          <form onSubmit={this.signUp.bind(this)}>
             <input
               type='email'
-              value={this.state.LIEmailValue}
-              onChange={(e) => this.setState({ LIEmailValue: e.target.value })}
+              value={this.state.SUEmailValue}
+              onChange={(e) => this.setState({ SUEmailValue: e.target.value })}
+              placeholder='Email'
               />
             <input
               type='password'
-              value={this.state.LIPasswordValue}
-              onChange={(e) => this.setState({ LIPasswordValue: e.target.value })}
+              value={this.state.SUPasswordValue}
+              onChange={(e) => this.setState({ SUPasswordValue: e.target.value })}
+              placeholder='Password'
               />
             <input
               type='submit'
-              value='Login'
+              value='Sign Up'
+              className='btn waves-effect waves-light cyan darken-2'
               />
           </form>
+        </div>
+      </div>
+      <div className='row'>
+        <div className='col l4 offset-l4 s6 offset-s3 margin-tb'>
+          <h4>Login</h4>
+            <form onSubmit={this.login.bind(this)}>
+              <input
+                type='email'
+                value={this.state.LIEmailValue}
+                onChange={(e) => this.setState({ LIEmailValue: e.target.value })}
+                placeholder='Email'
+                />
+              <input
+                type='password'
+                value={this.state.LIPasswordValue}
+                onChange={(e) => this.setState({ LIPasswordValue: e.target.value })}
+                placeholder='Password'
+                />
+              <input
+                type='submit'
+                value='Login'
+                className='btn waves-effect waves-light cyan darken-2'
+                />
+            </form>
+        </div>
       </div>
     </div>
    );

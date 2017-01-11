@@ -13,22 +13,13 @@ export default class Dashboard extends React.Component {
       stats: null
     }
   }
-  componentDidMount(){
-    this.state.database.once("value").then((snapshot) => {
-      if(snapshot.val() != null){
-        this.setState({
-          stats: snapshot.val()
-        });
-      }
-    });
+  componentWillMount(){
+    this.checkForStats();
   }
  render() {
    if(this.state.user){
      return(
        <div>
-         <h1>Push-Up Tracker</h1>
-         <h3>Welcome {this.state.user.email}</h3>
-         <button onClick={this.signOutUser.bind(this)}>Sign Out</button>
          <StartValue
            updateTextValue={(e) => this.setState({textValue: e.target.value})}
            textValue={this.state.textValue}
@@ -37,6 +28,7 @@ export default class Dashboard extends React.Component {
            setStats={this.setStats}
            database={this.state.database}
            />
+         <button onClick={this.signOutUser.bind(this)} className='waves-effect waves-light btn cyan darken-2'>Sign Out <i className='material-icons left'>lock_outline</i></button>
        </div>
      );
    }
@@ -54,7 +46,17 @@ export default class Dashboard extends React.Component {
    e.preventDefault()
    this.state.database.set({
      startingPushUp: this.state.textValue
-   }).then(() => this.forceUpdate())
+   });
+   this.checkForStats();
+ }
+ checkForStats(){
+   this.state.database.once("value").then((snapshot) => {
+     if(snapshot.val() != null){
+       this.setState({
+         stats: snapshot.val()
+       });
+     }
+   });
  }
 }
 
@@ -79,6 +81,7 @@ class StartValue extends React.Component {
         <input
           type='submit'
           value='Set'
+          className='waves-effect waves-light btn cyan darken-2'
           />
       </form>
     );
@@ -101,10 +104,12 @@ class LastValue extends React.Component {
           value={this.props.textValue}
           onChange={this.props.updateTextValue}
           placeholder='Staring # of Push-Ups'
+
           />
         <input
           type='submit'
           value='Set'
+          className='waves-effect waves-light btn cyan darken-2'
           />
       </form>
     );

@@ -54,7 +54,7 @@
 	
 	__webpack_require__(178);
 	
-	var _App = __webpack_require__(182);
+	var _App = __webpack_require__(183);
 	
 	var _App2 = _interopRequireDefault(_App);
 	
@@ -21513,7 +21513,7 @@
 	var content = __webpack_require__(179);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(181)(content, {});
+	var update = __webpack_require__(182)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -21538,7 +21538,7 @@
 	
 	
 	// module
-	exports.push([module.id, "", ""]);
+	exports.push([module.id, "body {\n  text-align: center;\n  font-weight: lighter; }\n\nh1 {\n  font-weight: 200; }\n\nh2, h3, h4 {\n  font-weight: 300; }\n\n.margin-tb {\n  margin: 25px 0; }\n\n.header {\n  background-color: #0097a7;\n  color: white; }\n\n.header h1 {\n  margin: 0;\n  padding: 20px 0; }\n\ninput[type=email]:focus:not([readonly]), input[type=password]:focus:not([readonly]) {\n  border-bottom: 1px solid #0097a7;\n  box-shadow: 0 1px 0 0 #0097a7; }\n", ""]);
 	
 	// exports
 
@@ -21600,7 +21600,8 @@
 
 
 /***/ },
-/* 181 */
+/* 181 */,
+/* 182 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -21852,7 +21853,7 @@
 
 
 /***/ },
-/* 182 */
+/* 183 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -21867,11 +21868,15 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
-	var _Login = __webpack_require__(183);
+	var _Header = __webpack_require__(186);
+	
+	var _Header2 = _interopRequireDefault(_Header);
+	
+	var _Login = __webpack_require__(184);
 	
 	var _Login2 = _interopRequireDefault(_Login);
 	
-	var _Dashboard = __webpack_require__(184);
+	var _Dashboard = __webpack_require__(185);
 	
 	var _Dashboard2 = _interopRequireDefault(_Dashboard);
 	
@@ -21908,15 +21913,25 @@
 	    key: "render",
 	    value: function render() {
 	      if (this.state.screenState == "login") {
-	        return _react2.default.createElement(_Login2.default, {
+	        return _react2.default.createElement(
+	          "div",
+	          null,
+	          _react2.default.createElement(_Header2.default, null),
+	          _react2.default.createElement(_Login2.default, {
+	            firebase: this.props.firebase,
+	            changeScreenState: this.changeScreenState.bind(this)
+	          })
+	        );
+	      }
+	      return _react2.default.createElement(
+	        "div",
+	        null,
+	        _react2.default.createElement(_Header2.default, null),
+	        _react2.default.createElement(_Dashboard2.default, {
 	          firebase: this.props.firebase,
 	          changeScreenState: this.changeScreenState.bind(this)
-	        });
-	      }
-	      return _react2.default.createElement(_Dashboard2.default, {
-	        firebase: this.props.firebase,
-	        changeScreenState: this.changeScreenState.bind(this)
-	      });
+	        })
+	      );
 	    }
 	  }]);
 	
@@ -21926,7 +21941,7 @@
 	exports.default = App;
 
 /***/ },
-/* 183 */
+/* 184 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21978,72 +21993,81 @@
 	
 	      return _react2.default.createElement(
 	        'div',
-	        null,
-	        _react2.default.createElement(
-	          'h1',
-	          null,
-	          'Push-up Tracker'
-	        ),
+	        { className: 'container' },
 	        _react2.default.createElement(
 	          'div',
-	          null,
+	          { className: 'row' },
 	          _react2.default.createElement(
-	            'h2',
-	            null,
-	            'Sign Up'
-	          ),
-	          _react2.default.createElement(
-	            'form',
-	            { onSubmit: this.signUp.bind(this) },
-	            _react2.default.createElement('input', {
-	              type: 'email',
-	              value: this.state.SUEmailValue,
-	              onChange: function onChange(e) {
-	                return _this2.setState({ SUEmailValue: e.target.value });
-	              }
-	            }),
-	            _react2.default.createElement('input', {
-	              type: 'password',
-	              value: this.state.SUPasswordValue,
-	              onChange: function onChange(e) {
-	                return _this2.setState({ SUPasswordValue: e.target.value });
-	              }
-	            }),
-	            _react2.default.createElement('input', {
-	              type: 'submit',
-	              value: 'Sign Up'
-	            })
+	            'div',
+	            { className: 'col l4 offset-l4 s6 offset-s3 margin-tb' },
+	            _react2.default.createElement(
+	              'h4',
+	              null,
+	              'Sign Up'
+	            ),
+	            _react2.default.createElement(
+	              'form',
+	              { onSubmit: this.signUp.bind(this) },
+	              _react2.default.createElement('input', {
+	                type: 'email',
+	                value: this.state.SUEmailValue,
+	                onChange: function onChange(e) {
+	                  return _this2.setState({ SUEmailValue: e.target.value });
+	                },
+	                placeholder: 'Email'
+	              }),
+	              _react2.default.createElement('input', {
+	                type: 'password',
+	                value: this.state.SUPasswordValue,
+	                onChange: function onChange(e) {
+	                  return _this2.setState({ SUPasswordValue: e.target.value });
+	                },
+	                placeholder: 'Password'
+	              }),
+	              _react2.default.createElement('input', {
+	                type: 'submit',
+	                value: 'Sign Up',
+	                className: 'btn waves-effect waves-light cyan darken-2'
+	              })
+	            )
 	          )
 	        ),
 	        _react2.default.createElement(
 	          'div',
-	          null,
+	          { className: 'row' },
 	          _react2.default.createElement(
-	            'h2',
-	            null,
-	            'Login'
-	          ),
-	          _react2.default.createElement(
-	            'form',
-	            { onSubmit: this.login.bind(this) },
-	            _react2.default.createElement('input', {
-	              type: 'email',
-	              value: this.state.LIEmailValue,
-	              onChange: function onChange(e) {
-	                return _this2.setState({ LIEmailValue: e.target.value });
-	              }
-	            }),
-	            _react2.default.createElement('input', {
-	              type: 'password',
-	              value: this.state.LIPasswordValue,
-	              onChange: function onChange(e) {
-	                return _this2.setState({ LIPasswordValue: e.target.value });
-	              }
-	            }),
-	            _react2.default.createElement('input', {
-	              type: 'submit',
-	              value: 'Login'
-	            })
+	            'div',
+	            { className: 'col l4 offset-l4 s6 offset-s3 margin-tb' },
+	            _react2.default.createElement(
+	              'h4',
+	              null,
+	              'Login'
+	            ),
+	            _react2.default.createElement(
+	              'form',
+	              { onSubmit: this.login.bind(this) },
+	              _react2.default.createElement('input', {
+	                type: 'email',
+	                value: this.state.LIEmailValue,
+	                onChange: function onChange(e) {
+	                  return _this2.setState({ LIEmailValue: e.target.value });
+	                },
+	                placeholder: 'Email'
+	              }),
+	              _react2.default.createElement('input', {
+	                type: 'password',
+	                value: this.state.LIPasswordValue,
+	                onChange: function onChange(e) {
+	                  return _this2.setState({ LIPasswordValue: e.target.value });
+	                },
+	                placeholder: 'Password'
+	              }),
+	              _react2.default.createElement('input', {
+	                type: 'submit',
+	                value: 'Login',
+	                className: 'btn waves-effect waves-light cyan darken-2'
+	              })
+	            )
 	          )
 	        )
 	      );
@@ -22080,7 +22104,7 @@
 	exports.default = Login;
 
 /***/ },
-/* 184 */
+/* 185 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -22123,53 +22147,39 @@
 	  }
 	
 	  _createClass(Dashboard, [{
-	    key: "componentDidMount",
-	    value: function componentDidMount() {
-	      var _this2 = this;
-	
-	      this.state.database.once("value").then(function (snapshot) {
-	        if (snapshot.val() != null) {
-	          _this2.setState({
-	            stats: snapshot.val()
-	          });
-	        }
-	      });
+	    key: "componentWillMount",
+	    value: function componentWillMount() {
+	      this.checkForStats();
 	    }
 	  }, {
 	    key: "render",
 	    value: function render() {
-	      var _this3 = this;
+	      var _this2 = this;
 	
 	      if (this.state.user) {
 	        return _react2.default.createElement(
 	          "div",
 	          null,
-	          _react2.default.createElement(
-	            "h1",
-	            null,
-	            "Push-Up Tracker"
-	          ),
-	          _react2.default.createElement(
-	            "h3",
-	            null,
-	            "Welcome ",
-	            this.state.user.email
-	          ),
-	          _react2.default.createElement(
-	            "button",
-	            { onClick: this.signOutUser.bind(this) },
-	            "Sign Out"
-	          ),
 	          _react2.default.createElement(StartValue, {
 	            updateTextValue: function updateTextValue(e) {
-	              return _this3.setState({ textValue: e.target.value });
+	              return _this2.setState({ textValue: e.target.value });
 	            },
 	            textValue: this.state.textValue,
 	            setStartValue: this.setStartValue.bind(this),
 	            stats: this.state.stats,
 	            setStats: this.setStats,
 	            database: this.state.database
-	          })
+	          }),
+	          _react2.default.createElement(
+	            "button",
+	            { onClick: this.signOutUser.bind(this), className: "waves-effect waves-light btn cyan darken-2" },
+	            "Sign Out ",
+	            _react2.default.createElement(
+	              "i",
+	              { className: "material-icons left" },
+	              "lock_outline"
+	            )
+	          )
 	        );
 	      }
 	      return _react2.default.createElement("div", null);
@@ -22187,13 +22197,23 @@
 	  }, {
 	    key: "setStartValue",
 	    value: function setStartValue(e) {
-	      var _this4 = this;
-	
 	      e.preventDefault();
 	      this.state.database.set({
 	        startingPushUp: this.state.textValue
-	      }).then(function () {
-	        return _this4.forceUpdate();
+	      });
+	      this.checkForStats();
+	    }
+	  }, {
+	    key: "checkForStats",
+	    value: function checkForStats() {
+	      var _this3 = this;
+	
+	      this.state.database.once("value").then(function (snapshot) {
+	        if (snapshot.val() != null) {
+	          _this3.setState({
+	            stats: snapshot.val()
+	          });
+	        }
 	      });
 	    }
 	  }]);
@@ -22235,7 +22255,8 @@
 	        }),
 	        _react2.default.createElement("input", {
 	          type: "submit",
-	          value: "Set"
+	          value: "Set",
+	          className: "waves-effect waves-light btn cyan darken-2"
 	        })
 	      );
 	    }
@@ -22273,10 +22294,12 @@
 	          value: this.props.textValue,
 	          onChange: this.props.updateTextValue,
 	          placeholder: "Staring # of Push-Ups"
+	
 	        }),
 	        _react2.default.createElement("input", {
 	          type: "submit",
-	          value: "Set"
+	          value: "Set",
+	          className: "waves-effect waves-light btn cyan darken-2"
 	        })
 	      );
 	    }
@@ -22284,6 +22307,59 @@
 	
 	  return LastValue;
 	}(_react2.default.Component);
+
+/***/ },
+/* 186 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _react = __webpack_require__(1);
+	
+	var _react2 = _interopRequireDefault(_react);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var Header = function (_React$Component) {
+	  _inherits(Header, _React$Component);
+	
+	  function Header() {
+	    _classCallCheck(this, Header);
+	
+	    return _possibleConstructorReturn(this, (Header.__proto__ || Object.getPrototypeOf(Header)).apply(this, arguments));
+	  }
+	
+	  _createClass(Header, [{
+	    key: "render",
+	    value: function render() {
+	      return _react2.default.createElement(
+	        "div",
+	        { className: "header" },
+	        _react2.default.createElement(
+	          "h1",
+	          null,
+	          "Push-Up Tracker"
+	        )
+	      );
+	    }
+	  }]);
+	
+	  return Header;
+	}(_react2.default.Component);
+	
+	exports.default = Header;
 
 /***/ }
 /******/ ]);
