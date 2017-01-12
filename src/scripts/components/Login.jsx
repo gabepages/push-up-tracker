@@ -21,7 +21,7 @@ export default class Login extends React.Component {
    return (
     <div className='container'>
       <div className='row'>
-        <div className='col l4 offset-l4 s6 offset-s3 margin-tb'>
+        <div className='col l4 offset-l4 s8 offset-s2 margin-tb'>
           <h4>Sign Up</h4>
           <form onSubmit={this.signUp.bind(this)}>
             <input
@@ -45,7 +45,7 @@ export default class Login extends React.Component {
         </div>
       </div>
       <div className='row'>
-        <div className='col l4 offset-l4 s6 offset-s3 margin-tb'>
+        <div className='col l4 offset-l4 s8 offset-s2 margin-tb'>
           <h4>Login</h4>
             <form onSubmit={this.login.bind(this)}>
               <input
