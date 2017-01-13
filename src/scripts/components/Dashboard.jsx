@@ -37,7 +37,10 @@ export default class Dashboard extends React.Component {
            </div>
            <div className='col s12 m8'>
              <GraphSection
-               signOutUser={this.signOutUser.bind(this)}/>
+               signOutUser={this.signOutUser.bind(this)}
+               stats={this.state.stats}
+               database={this.state.database}
+               />
 
            </div>
          </div>

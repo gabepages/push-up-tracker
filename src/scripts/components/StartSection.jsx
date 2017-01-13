@@ -5,13 +5,12 @@ export default class StartSection extends React.Component {
   constructor(props){
     super(props);
   }
-  componentDidMount(){
-
-  }
+  
   render(){
 
     if(this.props.stats !== null){
       let newArry = new Array;
+      console.log(this.props.stats);
       Object.keys(this.props.stats).map(key => newArry.push(this.props.stats[key]))
       newArry = newArry.map(item => {return parseInt(item)});
       let startValue = newArry[0]
@@ -23,6 +22,7 @@ export default class StartSection extends React.Component {
       });
       let averageValue = newArry.reduce((previous, current) =>{return previous + current});
       averageValue = averageValue / newArry.length
+      averageValue = Math.round( averageValue * 10 ) / 10;
       return (
         <div className='text-left'>
           <h5>Starting Value: {startValue}</h5>
