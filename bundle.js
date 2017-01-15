@@ -184,6 +184,7 @@
 /***/ function(module, exports) {
 
 	// shim for using process in browser
+	
 	var process = module.exports = {};
 	
 	// cached from whatever global is present so that test runners that stub it
@@ -194,84 +195,22 @@
 	var cachedSetTimeout;
 	var cachedClearTimeout;
 	
-	function defaultSetTimout() {
-	    throw new Error('setTimeout has not been defined');
-	}
-	function defaultClearTimeout () {
-	    throw new Error('clearTimeout has not been defined');
-	}
 	(function () {
-	    try {
-	        if (typeof setTimeout === 'function') {
-	            cachedSetTimeout = setTimeout;
-	        } else {
-	            cachedSetTimeout = defaultSetTimout;
-	        }
-	    } catch (e) {
-	        cachedSetTimeout = defaultSetTimout;
+	  try {
+	    cachedSetTimeout = setTimeout;
+	  } catch (e) {
+	    cachedSetTimeout = function () {
+	      throw new Error('setTimeout is not defined');
 	    }
-	    try {
-	        if (typeof clearTimeout === 'function') {
-	            cachedClearTimeout = clearTimeout;
-	        } else {
-	            cachedClearTimeout = defaultClearTimeout;
-	        }
-	    } catch (e) {
-	        cachedClearTimeout = defaultClearTimeout;
+	  }
+	  try {
+	    cachedClearTimeout = clearTimeout;
+	  } catch (e) {
+	    cachedClearTimeout = function () {
+	      throw new Error('clearTimeout is not defined');
 	    }
+	  }
 	} ())
-	function runTimeout(fun) {
-	    if (cachedSetTimeout === setTimeout) {
-	        //normal enviroments in sane situations
-	        return setTimeout(fun, 0);
-	    }
-	    // if setTimeout wasn't available but was latter defined
-	    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-	        cachedSetTimeout = setTimeout;
-	        return setTimeout(fun, 0);
-	    }
-	    try {
-	        // when when somebody has screwed with setTimeout but no I.E. maddness
-	        return cachedSetTimeout(fun, 0);
-	    } catch(e){
-	        try {
-	            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-	            return cachedSetTimeout.call(null, fun, 0);
-	        } catch(e){
-	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-	            return cachedSetTimeout.call(this, fun, 0);
-	        }
-	    }
-	
-	
-	}
-	function runClearTimeout(marker) {
-	    if (cachedClearTimeout === clearTimeout) {
-	        //normal enviroments in sane situations
-	        return clearTimeout(marker);
-	    }
-	    // if clearTimeout wasn't available but was latter defined
-	    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-	        cachedClearTimeout = clearTimeout;
-	        return clearTimeout(marker);
-	    }
-	    try {
-	        // when when somebody has screwed with setTimeout but no I.E. maddness
-	        return cachedClearTimeout(marker);
-	    } catch (e){
-	        try {
-	            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-	            return cachedClearTimeout.call(null, marker);
-	        } catch (e){
-	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-	            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-	            return cachedClearTimeout.call(this, marker);
-	        }
-	    }
-	
-	
-	
-	}
 	var queue = [];
 	var draining = false;
 	var currentQueue;
@@ -296,7 +235,7 @@
 	    if (draining) {
 	        return;
 	    }
-	    var timeout = runTimeout(cleanUpNextTick);
+	    var timeout = cachedSetTimeout(cleanUpNextTick);
 	    draining = true;
 	
 	    var len = queue.length;
@@ -313,7 +252,7 @@
 	    }
 	    currentQueue = null;
 	    draining = false;
-	    runClearTimeout(timeout);
+	    cachedClearTimeout(timeout);
 	}
 	
 	process.nextTick = function (fun) {
@@ -325,7 +264,7 @@
 	    }
 	    queue.push(new Item(fun, args));
 	    if (queue.length === 1 && !draining) {
-	        runTimeout(drainQueue);
+	        cachedSetTimeout(drainQueue, 0);
 	    }
 	};
 	
@@ -22244,7 +22183,10 @@
 	              "div",
 	              { className: "col s12 m8" },
 	              _react2.default.createElement(_GraphSection2.default, {
-	                signOutUser: this.signOutUser.bind(this) })
+	                signOutUser: this.signOutUser.bind(this),
+	                stats: this.state.stats,
+	                database: this.state.database
+	              })
 	            )
 	          )
 	        );
@@ -22325,9 +22267,6 @@
 	  }
 	
 	  _createClass(StartSection, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {}
-	  }, {
 	    key: 'render',
 	    value: function render() {
 	      var _this2 = this;
@@ -22335,11 +22274,28 @@
 	      if (this.props.stats !== null) {
 	        var _ret = function () {
 	          var newArry = new Array();
+	          var days = new Array();
 	          Object.keys(_this2.props.stats).map(function (key) {
 	            return newArry.push(_this2.props.stats[key]);
 	          });
 	          newArry = newArry.map(function (item) {
 	            return parseInt(item);
+	          });
+	          var tableBody = newArry.map(function (item, index) {
+	            return _react2.default.createElement(
+	              'tr',
+	              { key: index },
+	              _react2.default.createElement(
+	                'td',
+	                null,
+	                index + 1
+	              ),
+	              _react2.default.createElement(
+	                'td',
+	                null,
+	                item
+	              )
+	            );
 	          });
 	          var startValue = newArry[0];
 	          var bestValue = newArry.reduce(function (previous, current) {
@@ -22352,6 +22308,7 @@
 	            return previous + current;
 	          });
 	          averageValue = averageValue / newArry.length;
+	          averageValue = Math.round(averageValue * 10) / 10;
 	          return {
 	            v: _react2.default.createElement(
 	              'div',
@@ -22417,7 +22374,11 @@
 	                    )
 	                  )
 	                ),
-	                _react2.default.createElement('tbody', null)
+	                _react2.default.createElement(
+	                  'tbody',
+	                  null,
+	                  tableBody
+	                )
 	              )
 	            )
 	          };
@@ -22452,7 +22413,7 @@
 /* 187 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
@@ -22486,11 +22447,62 @@
 	  }
 	
 	  _createClass(GraphSection, [{
-	    key: "componentDidMount",
+	    key: 'componentDidUpdate',
+	    value: function componentDidUpdate(prevProps) {
+	      if (prevProps.stats != this.props.stats) {
+	        this.createGraph();
+	      }
+	    }
+	  }, {
+	    key: 'componentDidMount',
 	    value: function componentDidMount() {
+	      this.createGraph();
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'graph' },
+	          _react2.default.createElement('canvas', { id: 'lineChart' })
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'button-section' },
+	          _react2.default.createElement(
+	            'button',
+	            { onClick: this.props.signOutUser, className: 'waves-effect waves-light btn red lighten-1' },
+	            'Sign Out ',
+	            _react2.default.createElement(
+	              'i',
+	              { className: 'material-icons left' },
+	              'lock_outline'
+	            )
+	          )
+	        )
+	      );
+	    }
+	  }, {
+	    key: 'createGraph',
+	    value: function createGraph() {
+	      var _this2 = this;
+	
+	      var arryOfData = [];
+	      var labels = ['0'];
+	      if (this.props.stats != null) {
+	        arryOfData = new Array();
+	        labels = new Array();
+	        Object.keys(this.props.stats).map(function (key, index) {
+	          labels.push(index + 1);
+	          arryOfData.push(_this2.props.stats[key]);
+	        });
+	      }
 	      var ctx = document.getElementById("lineChart");
 	      var data = {
-	        labels: ['1', '2', '3', '4', '5'],
+	        labels: labels,
 	        datasets: [{
 	          fill: false,
 	          lineTension: 0.1,
@@ -22509,10 +22521,11 @@
 	          pointHoverBorderWidth: 2,
 	          pointRadius: 1,
 	          pointHitRadius: 10,
-	          data: [106, 170, 120, 130, 100],
+	          data: arryOfData,
 	          spanGaps: false
 	        }]
 	      };
+	
 	      var LineChart = new _chart2.default(ctx, {
 	        type: 'line',
 	        data: data,
@@ -22526,46 +22539,16 @@
 	                return tooltipItem.yLabel;
 	              }
 	            }
+	          },
+	          scales: {
+	            yAxes: [{
+	              ticks: {
+	                beginAtZero: true
+	              }
+	            }]
 	          }
 	        }
 	      });
-	    }
-	  }, {
-	    key: "render",
-	    value: function render() {
-	      return _react2.default.createElement(
-	        "div",
-	        null,
-	        _react2.default.createElement(
-	          "div",
-	          { className: "graph" },
-	          _react2.default.createElement("canvas", { id: "lineChart" })
-	        ),
-	        _react2.default.createElement(
-	          "div",
-	          { className: "button-section" },
-	          _react2.default.createElement(
-	            "button",
-	            { className: "waves-effect waves-light btn cyan darken-2" },
-	            "Edit Push-Ups ",
-	            _react2.default.createElement(
-	              "i",
-	              { className: "material-icons left" },
-	              "mode_edit"
-	            )
-	          ),
-	          _react2.default.createElement(
-	            "button",
-	            { onClick: this.props.signOutUser, className: "waves-effect waves-light btn red lighten-1" },
-	            "Sign Out ",
-	            _react2.default.createElement(
-	              "i",
-	              { className: "material-icons left" },
-	              "lock_outline"
-	            )
-	          )
-	        )
-	      );
 	    }
 	  }]);
 	

@@ -7,10 +7,41 @@ export default class GraphSection extends React.Component {
     super(props);
 
   }
+  componentDidUpdate(prevProps){
+    if(prevProps.stats != this.props.stats ){
+      this.createGraph()
+    }
+
+  }
   componentDidMount(){
+    this.createGraph()
+  }
+  render(){
+      return(
+        <div>
+          <div className='graph'>
+            <canvas id="lineChart"></canvas>
+          </div>
+          <div className='button-section'>
+            <button onClick={this.props.signOutUser} className='waves-effect waves-light btn red lighten-1'>Sign Out <i className='material-icons left'>lock_outline</i></button>
+          </div>
+        </div>
+      );
+  }
+  createGraph(){
+    let arryOfData = []
+    let labels = ['0']
+    if (this.props.stats != null){
+      arryOfData = new Array
+      labels = new Array
+      Object.keys(this.props.stats).map((key, index) => {
+        labels.push(index + 1)
+        arryOfData.push(this.props.stats[key])
+      })
+    }
     var ctx = document.getElementById("lineChart");
     var data = {
-      labels: ['1','2','3','4','5'],
+      labels: labels,
       datasets: [
           {
               fill: false,
@@ -30,11 +61,12 @@ export default class GraphSection extends React.Component {
               pointHoverBorderWidth: 2,
               pointRadius: 1,
               pointHitRadius: 10,
-              data: [106, 170, 120, 130, 100],
+              data: arryOfData,
               spanGaps: false,
           }
         ]
       };
+
       var LineChart = new Chart(ctx, {
           type: 'line',
           data: data,
@@ -48,22 +80,15 @@ export default class GraphSection extends React.Component {
                             return tooltipItem.yLabel;
                      }
                   }
+              },
+              scales: {
+                yAxes: [{
+                  ticks: {
+                    beginAtZero: true
+                  }
+                }]
               }
           }
-      });
-  }
-  render(){
-    return(
-      <div>
-        <div className='graph'>
-          <canvas id="lineChart" ></canvas>
-        </div>
-        <div className='button-section'>
-          <button className='waves-effect waves-light btn cyan darken-2'>Edit Push-Ups <i className='material-icons left'>mode_edit</i></button>
-          <button onClick={this.props.signOutUser} className='waves-effect waves-light btn red lighten-1'>Sign Out <i className='material-icons left'>lock_outline</i></button>
-        </div>
-      </div>
-
-    );
+      })
   }
 }

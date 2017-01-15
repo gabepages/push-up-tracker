@@ -5,14 +5,20 @@ export default class StartSection extends React.Component {
   constructor(props){
     super(props);
   }
-  
   render(){
-
     if(this.props.stats !== null){
       let newArry = new Array;
-      console.log(this.props.stats);
+      let days = new Array;
       Object.keys(this.props.stats).map(key => newArry.push(this.props.stats[key]))
       newArry = newArry.map(item => {return parseInt(item)});
+      let tableBody = newArry.map((item, index) =>{
+        return(
+          <tr key={index}>
+            <td>{index + 1}</td>
+            <td>{item}</td>
+          </tr>
+        )
+      });
       let startValue = newArry[0]
       let bestValue = newArry.reduce((previous, current) =>{
         if (current >= previous){
@@ -52,7 +58,7 @@ export default class StartSection extends React.Component {
               </tr>
             </thead>
             <tbody>
-
+              {tableBody}
             </tbody>
           </table>
         </div>
