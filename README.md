@@ -1,2 +1,2 @@
 # Push-Up Tracker
-## Track how many push-ups you do, by comparing your current push-up status to your 1st day of push-ups.
+## Made for the 30-day Push-up challenge, Push-Up Tracker tracks how many push-ups you do on a dashboard that displays your push up stats in an interactive way.
