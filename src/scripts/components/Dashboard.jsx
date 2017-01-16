@@ -13,7 +13,8 @@ export default class Dashboard extends React.Component {
       user: user,
       textValue:'',
       database: database,
-      stats: null
+      stats: null,
+      editingData: false
     }
   }
   componentWillMount(){
@@ -32,6 +33,8 @@ export default class Dashboard extends React.Component {
                stats={this.state.stats}
                setStats={this.setStats}
                database={this.state.database}
+               editData={(e) => this.setState({editingData: !this.state.editingData})}
+               editingData={this.state.editingData}
                />
 
            </div>

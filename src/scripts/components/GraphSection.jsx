@@ -18,7 +18,7 @@ export default class GraphSection extends React.Component {
   }
   render(){
       return(
-        <div>
+        <div >
           <div className='graph'>
             <canvas id="lineChart"></canvas>
           </div>

@@ -11,14 +11,7 @@ export default class StartSection extends React.Component {
       let days = new Array;
       Object.keys(this.props.stats).map(key => newArry.push(this.props.stats[key]))
       newArry = newArry.map(item => {return parseInt(item)});
-      let tableBody = newArry.map((item, index) =>{
-        return(
-          <tr key={index}>
-            <td>{index + 1}</td>
-            <td>{item}</td>
-          </tr>
-        )
-      });
+
       let startValue = newArry[0]
       let bestValue = newArry.reduce((previous, current) =>{
         if (current >= previous){
@@ -50,17 +43,13 @@ export default class StartSection extends React.Component {
               />
           </form>
           <div className='divider margin-tb'></div>
-          <table>
-            <thead>
-              <tr>
-                <th data-field="id">Day</th>
-                <th data-field="name">Push-Ups</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tableBody}
-            </tbody>
-          </table>
+          <PushUpTable
+            stats={this.props.stats}
+            editData={this.props.editData}
+            editingData={this.props.editingData}
+            updateTextValue={this.props.updateTextValue}
+            textValue={this.props.textValue}
+            />
         </div>
       )
 
@@ -80,5 +69,81 @@ export default class StartSection extends React.Component {
           />
       </form>
     );
+  }
+}
+
+class PushUpTable extends React.Component {
+  constructor(props){
+    super(props);
+  }
+  sendEditedData(data, key){
+    console.log(data,key, this.props.textValue);
+  }
+
+  render(){
+    let tableBody = Object.keys(this.props.stats).map((key, index, array) => {
+        return (
+            <tr key={index}>
+               <td>{index + 1}</td>
+               <td>{this.props.stats[key]}</td>
+            </tr>
+        )
+    });
+    // if(this.props.editingData != false){
+    //   let tableBody = Object.keys(this.props.stats).map((key, index, array) => {
+    //       return (
+    //           <tr key={index}>
+    //              <td>{index + 1}</td>
+    //              <td>{this.props.stats[key]}</td>
+    //              <td>
+    //                <input
+    //                type='text'
+    //                value={this.props.textValue.key}
+    //                onChange={this.props.updateTextValue}
+    //                onSubmit={this.sendEditedData.bind(key)}
+    //                placeholder='Edit Push-Ups'
+    //                />
+    //              </td>
+    //           </tr>
+    //       )
+    //   });
+    //   return(
+    //     <div>
+    //       <table>
+    //         <thead>
+    //           <tr>
+    //             <th data-field="id">Day</th>
+    //             <th data-field="name">Push-Ups</th>
+    //           </tr>
+    //         </thead>
+    //         <tbody>
+    //           {tableBody}
+    //         </tbody>
+    //       </table>
+    //       <div className='button-section'>
+    //         <button onClick={this.props.editData} className='waves-effect waves-light btn cyan darken-2'>Done</button>
+    //       </div>
+    //     </div>
+    //   )
+    // }
+
+    return(
+      <div>
+        <table>
+          <thead>
+            <tr>
+              <th data-field="id">Day</th>
+              <th data-field="name">Push-Ups</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tableBody}
+          </tbody>
+        </table>
+        <div className='button-section'>
+          <button className='waves-effect waves-light btn cyan darken-2'>Edit Push-Ups <i className='material-icons left'>mode_edit</i></button>
+        </div>
+      </div>
+    )
   }
 }
