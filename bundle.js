@@ -22514,48 +22514,30 @@
 	      // }
 	
 	      return _react2.default.createElement(
-	        'div',
+	        'table',
 	        null,
 	        _react2.default.createElement(
-	          'table',
+	          'thead',
 	          null,
 	          _react2.default.createElement(
-	            'thead',
+	            'tr',
 	            null,
 	            _react2.default.createElement(
-	              'tr',
-	              null,
-	              _react2.default.createElement(
-	                'th',
-	                { 'data-field': 'id' },
-	                'Day'
-	              ),
-	              _react2.default.createElement(
-	                'th',
-	                { 'data-field': 'name' },
-	                'Push-Ups'
-	              )
+	              'th',
+	              { 'data-field': 'id' },
+	              'Day'
+	            ),
+	            _react2.default.createElement(
+	              'th',
+	              { 'data-field': 'name' },
+	              'Push-Ups'
 	            )
-	          ),
-	          _react2.default.createElement(
-	            'tbody',
-	            null,
-	            tableBody
 	          )
 	        ),
 	        _react2.default.createElement(
-	          'div',
-	          { className: 'button-section' },
-	          _react2.default.createElement(
-	            'button',
-	            { className: 'waves-effect waves-light btn cyan darken-2' },
-	            'Edit Push-Ups ',
-	            _react2.default.createElement(
-	              'i',
-	              { className: 'material-icons left' },
-	              'mode_edit'
-	            )
-	          )
+	          'tbody',
+	          null,
+	          tableBody
 	        )
 	      );
 	    }
