@@ -4,9 +4,9 @@ import React from "react";
 export default class Header extends React.Component {
  render() {
     return (
-       <div className='header'>
+       <header>
          <h2>Push-Up Tracker</h2>
-       </div>
+       </header>
      );
    }
 }
