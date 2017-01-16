@@ -28,7 +28,7 @@ export default class StartSection extends React.Component {
           <h5>Best Value: {bestValue}</h5>
           <h5>Average Value: {averageValue}</h5>
           <div className='divider margin-tb'></div>
-          <h5>Add Push-Ups</h5>
+          <h5>Add Today's Push-Ups</h5>
           <form className='inline-form' onSubmit={this.props.setStartValue}>
             <input
               type='text'
@@ -128,7 +128,6 @@ class PushUpTable extends React.Component {
     // }
 
     return(
-      <div>
         <table>
           <thead>
             <tr>
@@ -140,10 +139,6 @@ class PushUpTable extends React.Component {
             {tableBody}
           </tbody>
         </table>
-        <div className='button-section'>
-          <button className='waves-effect waves-light btn cyan darken-2'>Edit Push-Ups <i className='material-icons left'>mode_edit</i></button>
-        </div>
-      </div>
     )
   }
 }
