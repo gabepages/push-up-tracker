@@ -49,6 +49,10 @@ export default class StartSection extends React.Component {
             editingData={this.props.editingData}
             updateTextValue={this.props.updateTextValue}
             textValue={this.props.textValue}
+            state={this.props.state}
+            database={this.props.database}
+            checkForStats={this.props.checkForStats}
+            clearField={this.props.clearField}
             />
         </div>
       )
@@ -76,11 +80,18 @@ class PushUpTable extends React.Component {
   constructor(props){
     super(props);
   }
-  sendEditedData(data, key){
-    console.log(data,key, this.props.textValue);
+  sendEditedData(key, e){
+    e.preventDefault()
+    this.props.database.update({
+      [key]: this.props.state[key]
+    }, () =>{
+      this.props.clearField(key)
+      this.props.checkForStats()
+    })
   }
 
   render(){
+
     let tableBody = Object.keys(this.props.stats).map((key, index, array) => {
         return (
             <tr key={index}>
@@ -89,43 +100,45 @@ class PushUpTable extends React.Component {
             </tr>
         )
     });
-    // if(this.props.editingData != false){
-    //   let tableBody = Object.keys(this.props.stats).map((key, index, array) => {
-    //       return (
-    //           <tr key={index}>
-    //              <td>{index + 1}</td>
-    //              <td>{this.props.stats[key]}</td>
-    //              <td>
-    //                <input
-    //                type='text'
-    //                value={this.props.textValue.key}
-    //                onChange={this.props.updateTextValue}
-    //                onSubmit={this.sendEditedData.bind(key)}
-    //                placeholder='Edit Push-Ups'
-    //                />
-    //              </td>
-    //           </tr>
-    //       )
-    //   });
-    //   return(
-    //     <div>
-    //       <table>
-    //         <thead>
-    //           <tr>
-    //             <th data-field="id">Day</th>
-    //             <th data-field="name">Push-Ups</th>
-    //           </tr>
-    //         </thead>
-    //         <tbody>
-    //           {tableBody}
-    //         </tbody>
-    //       </table>
-    //       <div className='button-section'>
-    //         <button onClick={this.props.editData} className='waves-effect waves-light btn cyan darken-2'>Done</button>
-    //       </div>
-    //     </div>
-    //   )
-    // }
+    if(this.props.editingData != false){
+      let tableBody = Object.keys(this.props.stats).map((key, index, array) => {
+          return (
+              <tr key={index}>
+                 <td>{index + 1}</td>
+                 <td>{this.props.stats[key]}</td>
+                 <td>
+                   <form onSubmit={this.sendEditedData.bind(this, key)}>
+                     <input
+                     type='text'
+                     value={this.props.state[key]}
+                     onChange={this.props.updateTextValue.bind(this, key)}
+
+                     placeholder='Edit Push-Ups'
+                     />
+                   </form>
+                 </td>
+              </tr>
+          )
+      });
+      return(
+        <div>
+          <table>
+            <thead>
+              <tr>
+                <th data-field="id">Day</th>
+                <th data-field="name">Push-Ups</th>
+              </tr>
+            </thead>
+            <tbody>
+              {tableBody}
+            </tbody>
+          </table>
+          <div className='button-section margin-tb'>
+            <button onClick={this.props.editData} className='waves-effect waves-light btn cyan darken-2'>Done</button>
+          </div>
+        </div>
+      )
+    }
 
     return(
         <table>
@@ -139,6 +152,10 @@ class PushUpTable extends React.Component {
             {tableBody}
           </tbody>
         </table>
+        <div className='button-section margin-tb'>
+          <button onClick={this.props.editData} className='waves-effect waves-light btn cyan darken-2'>Edit Push-Ups <i className='material-icons left'>mode_edit</i></button>
+        </div>
+      </div>
     )
   }
 }

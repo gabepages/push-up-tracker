@@ -20,6 +20,13 @@ export default class Dashboard extends React.Component {
   componentWillMount(){
     this.checkForStats();
   }
+  updateTextValue(name, e){
+    if(typeof name == "string"){
+      this.setState({[name]: e.target.value})
+    }else{
+      this.setState({textValue: name.target.value})
+    }
+  }
  render() {
    if(this.state.user){
      return(
@@ -27,7 +34,7 @@ export default class Dashboard extends React.Component {
          <div className="row dashboard">
            <div className='col s12 m4'>
              <StartSection
-               updateTextValue={(e) => this.setState({textValue: e.target.value})}
+               updateTextValue={this.updateTextValue.bind(this)}
                textValue={this.state.textValue}
                setStartValue={this.setStartValue.bind(this)}
                stats={this.state.stats}
@@ -35,6 +42,9 @@ export default class Dashboard extends React.Component {
                database={this.state.database}
                editData={(e) => this.setState({editingData: !this.state.editingData})}
                editingData={this.state.editingData}
+               state={this.state}
+               checkForStats={this.checkForStats.bind(this)}
+               clearField={this.clearField.bind(this)}
                />
 
            </div>
@@ -74,5 +84,8 @@ export default class Dashboard extends React.Component {
        });
      }
    });
+ }
+ clearField(field){
+   this.setState({[field]: ''})
  }
 }
