@@ -141,6 +141,7 @@ class PushUpTable extends React.Component {
     }
 
     return(
+      <div>
         <table>
           <thead>
             <tr>
