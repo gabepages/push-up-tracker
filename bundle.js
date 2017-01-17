@@ -184,6 +184,7 @@
 /***/ function(module, exports) {
 
 	// shim for using process in browser
+	
 	var process = module.exports = {};
 	
 	// cached from whatever global is present so that test runners that stub it
@@ -194,84 +195,22 @@
 	var cachedSetTimeout;
 	var cachedClearTimeout;
 	
-	function defaultSetTimout() {
-	    throw new Error('setTimeout has not been defined');
-	}
-	function defaultClearTimeout () {
-	    throw new Error('clearTimeout has not been defined');
-	}
 	(function () {
-	    try {
-	        if (typeof setTimeout === 'function') {
-	            cachedSetTimeout = setTimeout;
-	        } else {
-	            cachedSetTimeout = defaultSetTimout;
-	        }
-	    } catch (e) {
-	        cachedSetTimeout = defaultSetTimout;
+	  try {
+	    cachedSetTimeout = setTimeout;
+	  } catch (e) {
+	    cachedSetTimeout = function () {
+	      throw new Error('setTimeout is not defined');
 	    }
-	    try {
-	        if (typeof clearTimeout === 'function') {
-	            cachedClearTimeout = clearTimeout;
-	        } else {
-	            cachedClearTimeout = defaultClearTimeout;
-	        }
-	    } catch (e) {
-	        cachedClearTimeout = defaultClearTimeout;
+	  }
+	  try {
+	    cachedClearTimeout = clearTimeout;
+	  } catch (e) {
+	    cachedClearTimeout = function () {
+	      throw new Error('clearTimeout is not defined');
 	    }
+	  }
 	} ())
-	function runTimeout(fun) {
-	    if (cachedSetTimeout === setTimeout) {
-	        //normal enviroments in sane situations
-	        return setTimeout(fun, 0);
-	    }
-	    // if setTimeout wasn't available but was latter defined
-	    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-	        cachedSetTimeout = setTimeout;
-	        return setTimeout(fun, 0);
-	    }
-	    try {
-	        // when when somebody has screwed with setTimeout but no I.E. maddness
-	        return cachedSetTimeout(fun, 0);
-	    } catch(e){
-	        try {
-	            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-	            return cachedSetTimeout.call(null, fun, 0);
-	        } catch(e){
-	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-	            return cachedSetTimeout.call(this, fun, 0);
-	        }
-	    }
-	
-	
-	}
-	function runClearTimeout(marker) {
-	    if (cachedClearTimeout === clearTimeout) {
-	        //normal enviroments in sane situations
-	        return clearTimeout(marker);
-	    }
-	    // if clearTimeout wasn't available but was latter defined
-	    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-	        cachedClearTimeout = clearTimeout;
-	        return clearTimeout(marker);
-	    }
-	    try {
-	        // when when somebody has screwed with setTimeout but no I.E. maddness
-	        return cachedClearTimeout(marker);
-	    } catch (e){
-	        try {
-	            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-	            return cachedClearTimeout.call(null, marker);
-	        } catch (e){
-	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-	            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-	            return cachedClearTimeout.call(this, marker);
-	        }
-	    }
-	
-	
-	
-	}
 	var queue = [];
 	var draining = false;
 	var currentQueue;
@@ -296,7 +235,7 @@
 	    if (draining) {
 	        return;
 	    }
-	    var timeout = runTimeout(cleanUpNextTick);
+	    var timeout = cachedSetTimeout(cleanUpNextTick);
 	    draining = true;
 	
 	    var len = queue.length;
@@ -313,7 +252,7 @@
 	    }
 	    currentQueue = null;
 	    draining = false;
-	    runClearTimeout(timeout);
+	    cachedClearTimeout(timeout);
 	}
 	
 	process.nextTick = function (fun) {
@@ -325,7 +264,7 @@
 	    }
 	    queue.push(new Item(fun, args));
 	    if (queue.length === 1 && !draining) {
-	        runTimeout(drainQueue);
+	        cachedSetTimeout(drainQueue, 0);
 	    }
 	};
 	
@@ -22181,6 +22120,8 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -22216,6 +22157,15 @@
 	      this.checkForStats();
 	    }
 	  }, {
+	    key: "updateTextValue",
+	    value: function updateTextValue(name, e) {
+	      if (typeof name == "string") {
+	        this.setState(_defineProperty({}, name, e.target.value));
+	      } else {
+	        this.setState({ textValue: name.target.value });
+	      }
+	    }
+	  }, {
 	    key: "render",
 	    value: function render() {
 	      var _this2 = this;
@@ -22231,9 +22181,7 @@
 	              "div",
 	              { className: "col s12 m4" },
 	              _react2.default.createElement(_StartSection2.default, {
-	                updateTextValue: function updateTextValue(e) {
-	                  return _this2.setState({ textValue: e.target.value });
-	                },
+	                updateTextValue: this.updateTextValue.bind(this),
 	                textValue: this.state.textValue,
 	                setStartValue: this.setStartValue.bind(this),
 	                stats: this.state.stats,
@@ -22242,7 +22190,10 @@
 	                editData: function editData(e) {
 	                  return _this2.setState({ editingData: !_this2.state.editingData });
 	                },
-	                editingData: this.state.editingData
+	                editingData: this.state.editingData,
+	                state: this.state,
+	                checkForStats: this.checkForStats.bind(this),
+	                clearField: this.clearField.bind(this)
 	              })
 	            ),
 	            _react2.default.createElement(
@@ -22290,6 +22241,11 @@
 	        }
 	      });
 	    }
+	  }, {
+	    key: "clearField",
+	    value: function clearField(field) {
+	      this.setState(_defineProperty({}, field, ''));
+	    }
 	  }]);
 	
 	  return Dashboard;
@@ -22316,6 +22272,8 @@
 	var _react2 = _interopRequireDefault(_react);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
@@ -22409,7 +22367,11 @@
 	                editData: _this2.props.editData,
 	                editingData: _this2.props.editingData,
 	                updateTextValue: _this2.props.updateTextValue,
-	                textValue: _this2.props.textValue
+	                textValue: _this2.props.textValue,
+	                state: _this2.props.state,
+	                database: _this2.props.database,
+	                checkForStats: _this2.props.checkForStats,
+	                clearField: _this2.props.clearField
 	              })
 	            )
 	          };
@@ -22451,13 +22413,19 @@
 	
 	  _createClass(PushUpTable, [{
 	    key: 'sendEditedData',
-	    value: function sendEditedData(data, key) {
-	      console.log(data, key, this.props.textValue);
+	    value: function sendEditedData(key, e) {
+	      var _this4 = this;
+	
+	      e.preventDefault();
+	      this.props.database.update(_defineProperty({}, key, this.props.state[key]), function () {
+	        _this4.props.clearField(key);
+	        _this4.props.checkForStats();
+	      });
 	    }
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this4 = this;
+	      var _this5 = this;
 	
 	      var tableBody = Object.keys(this.props.stats).map(function (key, index, array) {
 	        return _react2.default.createElement(
@@ -22471,47 +22439,83 @@
 	          _react2.default.createElement(
 	            'td',
 	            null,
-	            _this4.props.stats[key]
+	            _this5.props.stats[key]
 	          )
 	        );
 	      });
-	      // if(this.props.editingData != false){
-	      //   let tableBody = Object.keys(this.props.stats).map((key, index, array) => {
-	      //       return (
-	      //           <tr key={index}>
-	      //              <td>{index + 1}</td>
-	      //              <td>{this.props.stats[key]}</td>
-	      //              <td>
-	      //                <input
-	      //                type='text'
-	      //                value={this.props.textValue.key}
-	      //                onChange={this.props.updateTextValue}
-	      //                onSubmit={this.sendEditedData.bind(key)}
-	      //                placeholder='Edit Push-Ups'
-	      //                />
-	      //              </td>
-	      //           </tr>
-	      //       )
-	      //   });
-	      //   return(
-	      //     <div>
-	      //       <table>
-	      //         <thead>
-	      //           <tr>
-	      //             <th data-field="id">Day</th>
-	      //             <th data-field="name">Push-Ups</th>
-	      //           </tr>
-	      //         </thead>
-	      //         <tbody>
-	      //           {tableBody}
-	      //         </tbody>
-	      //       </table>
-	      //       <div className='button-section'>
-	      //         <button onClick={this.props.editData} className='waves-effect waves-light btn cyan darken-2'>Done</button>
-	      //       </div>
-	      //     </div>
-	      //   )
-	      // }
+	      if (this.props.editingData != false) {
+	        var _tableBody = Object.keys(this.props.stats).map(function (key, index, array) {
+	          return _react2.default.createElement(
+	            'tr',
+	            { key: index },
+	            _react2.default.createElement(
+	              'td',
+	              null,
+	              index + 1
+	            ),
+	            _react2.default.createElement(
+	              'td',
+	              null,
+	              _this5.props.stats[key]
+	            ),
+	            _react2.default.createElement(
+	              'td',
+	              null,
+	              _react2.default.createElement(
+	                'form',
+	                { onSubmit: _this5.sendEditedData.bind(_this5, key) },
+	                _react2.default.createElement('input', {
+	                  type: 'text',
+	                  value: _this5.props.state[key],
+	                  onChange: _this5.props.updateTextValue.bind(_this5, key),
+	
+	                  placeholder: 'Edit Push-Ups'
+	                })
+	              )
+	            )
+	          );
+	        });
+	        return _react2.default.createElement(
+	          'div',
+	          null,
+	          _react2.default.createElement(
+	            'table',
+	            null,
+	            _react2.default.createElement(
+	              'thead',
+	              null,
+	              _react2.default.createElement(
+	                'tr',
+	                null,
+	                _react2.default.createElement(
+	                  'th',
+	                  { 'data-field': 'id' },
+	                  'Day'
+	                ),
+	                _react2.default.createElement(
+	                  'th',
+	                  { 'data-field': 'name' },
+	                  'Push-Ups'
+	                )
+	              )
+	            ),
+	            _react2.default.createElement(
+	              'tbody',
+	              null,
+	              _tableBody
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'div',
+	            { className: 'button-section margin-tb' },
+	            _react2.default.createElement(
+	              'button',
+	              { onClick: this.props.editData, className: 'waves-effect waves-light btn cyan darken-2' },
+	              'Done'
+	            )
+	          )
+	        );
+	      }
 	
 	      return _react2.default.createElement(
 	        'div',
@@ -22545,10 +22549,10 @@
 	        ),
 	        _react2.default.createElement(
 	          'div',
-	          { className: 'button-section' },
+	          { className: 'button-section margin-tb' },
 	          _react2.default.createElement(
 	            'button',
-	            { className: 'waves-effect waves-light btn cyan darken-2' },
+	            { onClick: this.props.editData, className: 'waves-effect waves-light btn cyan darken-2' },
 	            'Edit Push-Ups ',
 	            _react2.default.createElement(
 	              'i',
