@@ -28,7 +28,7 @@ export default class StartSection extends React.Component {
           <h5>Best Value: {bestValue}</h5>
           <h5>Average Value: {averageValue}</h5>
           <div className='divider margin-tb'></div>
-          <h5>Add Push-Ups</h5>
+          <h5>Add Today's Push-Ups</h5>
           <form className='inline-form' onSubmit={this.props.setStartValue}>
             <input
               type='text'

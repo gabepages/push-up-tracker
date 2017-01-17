@@ -184,7 +184,6 @@
 /***/ function(module, exports) {
 
 	// shim for using process in browser
-	
 	var process = module.exports = {};
 	
 	// cached from whatever global is present so that test runners that stub it
@@ -195,22 +194,84 @@
 	var cachedSetTimeout;
 	var cachedClearTimeout;
 	
+	function defaultSetTimout() {
+	    throw new Error('setTimeout has not been defined');
+	}
+	function defaultClearTimeout () {
+	    throw new Error('clearTimeout has not been defined');
+	}
 	(function () {
-	  try {
-	    cachedSetTimeout = setTimeout;
-	  } catch (e) {
-	    cachedSetTimeout = function () {
-	      throw new Error('setTimeout is not defined');
+	    try {
+	        if (typeof setTimeout === 'function') {
+	            cachedSetTimeout = setTimeout;
+	        } else {
+	            cachedSetTimeout = defaultSetTimout;
+	        }
+	    } catch (e) {
+	        cachedSetTimeout = defaultSetTimout;
 	    }
-	  }
-	  try {
-	    cachedClearTimeout = clearTimeout;
-	  } catch (e) {
-	    cachedClearTimeout = function () {
-	      throw new Error('clearTimeout is not defined');
+	    try {
+	        if (typeof clearTimeout === 'function') {
+	            cachedClearTimeout = clearTimeout;
+	        } else {
+	            cachedClearTimeout = defaultClearTimeout;
+	        }
+	    } catch (e) {
+	        cachedClearTimeout = defaultClearTimeout;
 	    }
-	  }
 	} ())
+	function runTimeout(fun) {
+	    if (cachedSetTimeout === setTimeout) {
+	        //normal enviroments in sane situations
+	        return setTimeout(fun, 0);
+	    }
+	    // if setTimeout wasn't available but was latter defined
+	    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+	        cachedSetTimeout = setTimeout;
+	        return setTimeout(fun, 0);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedSetTimeout(fun, 0);
+	    } catch(e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+	            return cachedSetTimeout.call(null, fun, 0);
+	        } catch(e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+	            return cachedSetTimeout.call(this, fun, 0);
+	        }
+	    }
+	
+	
+	}
+	function runClearTimeout(marker) {
+	    if (cachedClearTimeout === clearTimeout) {
+	        //normal enviroments in sane situations
+	        return clearTimeout(marker);
+	    }
+	    // if clearTimeout wasn't available but was latter defined
+	    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+	        cachedClearTimeout = clearTimeout;
+	        return clearTimeout(marker);
+	    }
+	    try {
+	        // when when somebody has screwed with setTimeout but no I.E. maddness
+	        return cachedClearTimeout(marker);
+	    } catch (e){
+	        try {
+	            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+	            return cachedClearTimeout.call(null, marker);
+	        } catch (e){
+	            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+	            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+	            return cachedClearTimeout.call(this, marker);
+	        }
+	    }
+	
+	
+	
+	}
 	var queue = [];
 	var draining = false;
 	var currentQueue;
@@ -235,7 +296,7 @@
 	    if (draining) {
 	        return;
 	    }
-	    var timeout = cachedSetTimeout(cleanUpNextTick);
+	    var timeout = runTimeout(cleanUpNextTick);
 	    draining = true;
 	
 	    var len = queue.length;
@@ -252,7 +313,7 @@
 	    }
 	    currentQueue = null;
 	    draining = false;
-	    cachedClearTimeout(timeout);
+	    runClearTimeout(timeout);
 	}
 	
 	process.nextTick = function (fun) {
@@ -264,7 +325,7 @@
 	    }
 	    queue.push(new Item(fun, args));
 	    if (queue.length === 1 && !draining) {
-	        cachedSetTimeout(drainQueue, 0);
+	        runTimeout(drainQueue);
 	    }
 	};
 	
@@ -21477,7 +21538,7 @@
 	
 	
 	// module
-	exports.push([module.id, "body {\n  text-align: center;\n  font-weight: lighter; }\n\nh1, h2 {\n  font-weight: 200; }\n\nh3, h4, h5 {\n  font-weight: 300; }\n\n.margin-tb {\n  margin: 25px 0; }\n\n.header {\n  background-color: #0097a7;\n  color: white; }\n\n.header h2 {\n  margin: 0;\n  padding: 10px 0; }\n\ninput[type=email]:focus:not([readonly]), input[type=password]:focus:not([readonly]), input[type=text]:focus:not([readonly]) {\n  border-bottom: 1px solid #0097a7;\n  box-shadow: 0 1px 0 0 #0097a7; }\n\n.dashboard {\n  margin: 50px 0; }\n\n.inline-form {\n  display: flex;\n  align-items: baseline;\n  flex-wrap: wrap; }\n\n.inline-form input[type='text'] {\n  width: 50%;\n  min-width: 150px;\n  margin-right: 20px; }\n\n.text-left {\n  text-align: left; }\n\n.button-section {\n  display: flex;\n  justify-content: space-around;\n  flex-wrap: wrap; }\n\n.graph {\n  width: 100%;\n  max-height: 500px;\n  margin-bottom: 50px; }\n", ""]);
+	exports.push([module.id, "body {\n  text-align: center;\n  font-weight: lighter; }\n\nh1, h2 {\n  font-weight: 200; }\n\nh3, h4, h5 {\n  font-weight: 300; }\n\n.margin-tb {\n  margin: 25px 0; }\n\nheader {\n  background-color: #0097a7;\n  color: white; }\n\nheader h2 {\n  margin: 0;\n  padding: 10px 0; }\n\ninput[type=email]:focus:not([readonly]), input[type=password]:focus:not([readonly]), input[type=text]:focus:not([readonly]) {\n  border-bottom: 1px solid #0097a7;\n  box-shadow: 0 1px 0 0 #0097a7; }\n\n.dashboard {\n  margin: 50px 0; }\n\n.inline-form {\n  display: flex;\n  align-items: baseline;\n  flex-wrap: wrap; }\n\n.inline-form input[type='text'] {\n  width: 50%;\n  min-width: 150px;\n  margin-right: 20px; }\n\n.text-left {\n  text-align: left; }\n\n.button-section {\n  display: flex;\n  justify-content: space-around;\n  flex-wrap: wrap; }\n\n.graph {\n  width: 100%;\n  max-height: 500px;\n  margin-bottom: 50px; }\n", ""]);
 	
 	// exports
 
@@ -21915,8 +21976,8 @@
 	    key: "render",
 	    value: function render() {
 	      return _react2.default.createElement(
-	        "div",
-	        { className: "header" },
+	        "header",
+	        null,
 	        _react2.default.createElement(
 	          "h2",
 	          null,
@@ -22143,7 +22204,8 @@
 	      user: user,
 	      textValue: '',
 	      database: database,
-	      stats: null
+	      stats: null,
+	      editingData: false
 	    };
 	    return _this;
 	  }
@@ -22176,7 +22238,11 @@
 	                setStartValue: this.setStartValue.bind(this),
 	                stats: this.state.stats,
 	                setStats: this.setStats,
-	                database: this.state.database
+	                database: this.state.database,
+	                editData: function editData(e) {
+	                  return _this2.setState({ editingData: !_this2.state.editingData });
+	                },
+	                editingData: this.state.editingData
 	              })
 	            ),
 	            _react2.default.createElement(
@@ -22281,22 +22347,7 @@
 	          newArry = newArry.map(function (item) {
 	            return parseInt(item);
 	          });
-	          var tableBody = newArry.map(function (item, index) {
-	            return _react2.default.createElement(
-	              'tr',
-	              { key: index },
-	              _react2.default.createElement(
-	                'td',
-	                null,
-	                index + 1
-	              ),
-	              _react2.default.createElement(
-	                'td',
-	                null,
-	                item
-	              )
-	            );
-	          });
+	
 	          var startValue = newArry[0];
 	          var bestValue = newArry.reduce(function (previous, current) {
 	            if (current >= previous) {
@@ -22335,7 +22386,7 @@
 	              _react2.default.createElement(
 	                'h5',
 	                null,
-	                'Add Push-Ups'
+	                'Add Today\'s Push-Ups'
 	              ),
 	              _react2.default.createElement(
 	                'form',
@@ -22353,33 +22404,13 @@
 	                })
 	              ),
 	              _react2.default.createElement('div', { className: 'divider margin-tb' }),
-	              _react2.default.createElement(
-	                'table',
-	                null,
-	                _react2.default.createElement(
-	                  'thead',
-	                  null,
-	                  _react2.default.createElement(
-	                    'tr',
-	                    null,
-	                    _react2.default.createElement(
-	                      'th',
-	                      { 'data-field': 'id' },
-	                      'Day'
-	                    ),
-	                    _react2.default.createElement(
-	                      'th',
-	                      { 'data-field': 'name' },
-	                      'Push-Ups'
-	                    )
-	                  )
-	                ),
-	                _react2.default.createElement(
-	                  'tbody',
-	                  null,
-	                  tableBody
-	                )
-	              )
+	              _react2.default.createElement(PushUpTable, {
+	                stats: _this2.props.stats,
+	                editData: _this2.props.editData,
+	                editingData: _this2.props.editingData,
+	                updateTextValue: _this2.props.updateTextValue,
+	                textValue: _this2.props.textValue
+	              })
 	            )
 	          };
 	        }();
@@ -22408,6 +22439,130 @@
 	}(_react2.default.Component);
 	
 	exports.default = StartSection;
+	
+	var PushUpTable = function (_React$Component2) {
+	  _inherits(PushUpTable, _React$Component2);
+	
+	  function PushUpTable(props) {
+	    _classCallCheck(this, PushUpTable);
+	
+	    return _possibleConstructorReturn(this, (PushUpTable.__proto__ || Object.getPrototypeOf(PushUpTable)).call(this, props));
+	  }
+	
+	  _createClass(PushUpTable, [{
+	    key: 'sendEditedData',
+	    value: function sendEditedData(data, key) {
+	      console.log(data, key, this.props.textValue);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this4 = this;
+	
+	      var tableBody = Object.keys(this.props.stats).map(function (key, index, array) {
+	        return _react2.default.createElement(
+	          'tr',
+	          { key: index },
+	          _react2.default.createElement(
+	            'td',
+	            null,
+	            index + 1
+	          ),
+	          _react2.default.createElement(
+	            'td',
+	            null,
+	            _this4.props.stats[key]
+	          )
+	        );
+	      });
+	      // if(this.props.editingData != false){
+	      //   let tableBody = Object.keys(this.props.stats).map((key, index, array) => {
+	      //       return (
+	      //           <tr key={index}>
+	      //              <td>{index + 1}</td>
+	      //              <td>{this.props.stats[key]}</td>
+	      //              <td>
+	      //                <input
+	      //                type='text'
+	      //                value={this.props.textValue.key}
+	      //                onChange={this.props.updateTextValue}
+	      //                onSubmit={this.sendEditedData.bind(key)}
+	      //                placeholder='Edit Push-Ups'
+	      //                />
+	      //              </td>
+	      //           </tr>
+	      //       )
+	      //   });
+	      //   return(
+	      //     <div>
+	      //       <table>
+	      //         <thead>
+	      //           <tr>
+	      //             <th data-field="id">Day</th>
+	      //             <th data-field="name">Push-Ups</th>
+	      //           </tr>
+	      //         </thead>
+	      //         <tbody>
+	      //           {tableBody}
+	      //         </tbody>
+	      //       </table>
+	      //       <div className='button-section'>
+	      //         <button onClick={this.props.editData} className='waves-effect waves-light btn cyan darken-2'>Done</button>
+	      //       </div>
+	      //     </div>
+	      //   )
+	      // }
+	
+	      return _react2.default.createElement(
+	        'div',
+	        null,
+	        _react2.default.createElement(
+	          'table',
+	          null,
+	          _react2.default.createElement(
+	            'thead',
+	            null,
+	            _react2.default.createElement(
+	              'tr',
+	              null,
+	              _react2.default.createElement(
+	                'th',
+	                { 'data-field': 'id' },
+	                'Day'
+	              ),
+	              _react2.default.createElement(
+	                'th',
+	                { 'data-field': 'name' },
+	                'Push-Ups'
+	              )
+	            )
+	          ),
+	          _react2.default.createElement(
+	            'tbody',
+	            null,
+	            tableBody
+	          )
+	        ),
+	        _react2.default.createElement(
+	          'div',
+	          { className: 'button-section' },
+	          _react2.default.createElement(
+	            'button',
+	            { className: 'waves-effect waves-light btn cyan darken-2' },
+	            'Edit Push-Ups ',
+	            _react2.default.createElement(
+	              'i',
+	              { className: 'material-icons left' },
+	              'mode_edit'
+	            )
+	          )
+	        )
+	      );
+	    }
+	  }]);
+	
+	  return PushUpTable;
+	}(_react2.default.Component);
 
 /***/ },
 /* 187 */

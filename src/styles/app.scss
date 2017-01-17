@@ -7,8 +7,8 @@ h1,h2{font-weight: 200}
 h3,h4,h5{font-weight: 300}
 .margin-tb{margin: 25px 0}
 
-.header{background-color: #0097a7;color: white}
-.header h2{margin: 0; padding: 10px 0}
+header{background-color: #0097a7;color: white}
+header h2{margin: 0; padding: 10px 0}
 
 input[type=email]:focus:not([readonly]),input[type=password]:focus:not([readonly]),input[type=text]:focus:not([readonly]){
   border-bottom: 1px solid #0097a7;
