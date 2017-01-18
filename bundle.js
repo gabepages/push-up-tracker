@@ -21477,7 +21477,7 @@
 	
 	
 	// module
-	exports.push([module.id, "body {\n  text-align: center;\n  font-weight: lighter; }\n\nh1, h2 {\n  font-weight: 200; }\n\nh3, h4, h5 {\n  font-weight: 300; }\n\n.margin-tb {\n  margin: 25px 0; }\n\nheader {\n  background-color: #0097a7;\n  color: white; }\n\nheader h2 {\n  margin: 0;\n  padding: 10px 0; }\n\ninput[type=email]:focus:not([readonly]), input[type=password]:focus:not([readonly]), input[type=text]:focus:not([readonly]) {\n  border-bottom: 1px solid #0097a7;\n  box-shadow: 0 1px 0 0 #0097a7; }\n\n.dashboard {\n  margin: 50px 0; }\n\n.inline-form {\n  display: flex;\n  align-items: baseline;\n  flex-wrap: wrap; }\n\n.inline-form input[type='text'] {\n  width: 50%;\n  min-width: 150px;\n  margin-right: 20px; }\n\n.text-left {\n  text-align: left; }\n\n.button-section {\n  display: flex;\n  justify-content: space-around;\n  flex-wrap: wrap; }\n\n.graph {\n  width: 100%;\n  max-height: 500px;\n  margin-bottom: 50px; }\n", ""]);
+	exports.push([module.id, "body {\n  text-align: center;\n  font-weight: lighter; }\n\nh1, h2 {\n  font-weight: 200; }\n\nh3, h4, h5 {\n  font-weight: 300; }\n\n.margin-tb {\n  margin: 25px 0; }\n\nheader {\n  background-color: #0097a7;\n  color: white; }\n\nheader h2 {\n  margin: 0;\n  padding: 10px 0; }\n\ninput[type=email]:focus:not([readonly]), input[type=password]:focus:not([readonly]), input[type=text]:focus:not([readonly]) {\n  border-bottom: 1px solid #0097a7;\n  box-shadow: 0 1px 0 0 #0097a7; }\n\n.dashboard {\n  margin: 50px 0; }\n\n.inline-form {\n  display: flex;\n  align-items: baseline;\n  flex-wrap: wrap; }\n\n.inline-form input[type='text'] {\n  width: 50%;\n  min-width: 150px;\n  margin-right: 20px; }\n\n.stat-section {\n  text-align: left; }\n\n.button-section {\n  display: flex;\n  justify-content: space-around;\n  flex-wrap: wrap; }\n\n.graph {\n  width: 100%;\n  max-height: 500px;\n  margin-bottom: 50px; }\n\n.table-section {\n  text-align: center; }\n  .table-section td, .table-section th {\n    text-align: center; }\n\n@media screen and (max-width: 768px) {\n  header h2 {\n    font-size: 35px; }\n  .dashboard {\n    margin: 30px 0; } }\n\n@media screen and (max-width: 600px) {\n  .stat-section {\n    text-align: center; }\n  .inline-form {\n    justify-content: center; }\n  .graph {\n    margin-top: 40px; } }\n\n@media screen and (max-width: 425px) {\n  .dashboard {\n    margin: 20px 0; } }\n", ""]);
 	
 	// exports
 
@@ -22321,7 +22321,7 @@
 	          return {
 	            v: _react2.default.createElement(
 	              'div',
-	              { className: 'text-left' },
+	              { className: 'stat-section' },
 	              _react2.default.createElement(
 	                'h5',
 	                null,
@@ -22480,7 +22480,7 @@
 	          null,
 	          _react2.default.createElement(
 	            'table',
-	            null,
+	            { className: 'table-section' },
 	            _react2.default.createElement(
 	              'thead',
 	              null,
@@ -22496,6 +22496,11 @@
 	                  'th',
 	                  { 'data-field': 'name' },
 	                  'Push-Ups'
+	                ),
+	                _react2.default.createElement(
+	                  'th',
+	                  { 'data-field': 'name' },
+	                  'Edit'
 	                )
 	              )
 	            ),
@@ -22522,7 +22527,7 @@
 	        null,
 	        _react2.default.createElement(
 	          'table',
-	          null,
+	          { className: 'table-section' },
 	          _react2.default.createElement(
 	            'thead',
 	            null,

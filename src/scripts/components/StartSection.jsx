@@ -23,7 +23,7 @@ export default class StartSection extends React.Component {
       averageValue = averageValue / newArry.length
       averageValue = Math.round( averageValue * 10 ) / 10;
       return (
-        <div className='text-left'>
+        <div className='stat-section'>
           <h5>Starting Value: {startValue}</h5>
           <h5>Best Value: {bestValue}</h5>
           <h5>Average Value: {averageValue}</h5>
@@ -122,11 +122,12 @@ class PushUpTable extends React.Component {
       });
       return(
         <div>
-          <table>
+          <table className='table-section'>
             <thead>
               <tr>
                 <th data-field="id">Day</th>
                 <th data-field="name">Push-Ups</th>
+                <th data-field="name">Edit</th>
               </tr>
             </thead>
             <tbody>
@@ -142,7 +143,7 @@ class PushUpTable extends React.Component {
 
     return(
       <div>
-        <table>
+        <table className='table-section'>
           <thead>
             <tr>
               <th data-field="id">Day</th>
