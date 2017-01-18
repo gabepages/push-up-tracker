@@ -3,21 +3,82 @@ body{
   font-weight: lighter;
 }
 
-h1,h2{font-weight: 200}
-h3,h4,h5{font-weight: 300}
-.margin-tb{margin: 25px 0}
+h1,h2{
+  font-weight: 200;
+}
 
-header{background-color: #0097a7;color: white}
-header h2{margin: 0; padding: 10px 0}
+h3,h4,h5{
+  font-weight: 300;
+}
+.margin-tb{
+  margin: 25px 0
+}
+
+header{
+  background-color: #0097a7;
+  color: white;
+}
+header h2{
+  margin: 0;
+  padding: 10px 0
+}
 
 input[type=email]:focus:not([readonly]),input[type=password]:focus:not([readonly]),input[type=text]:focus:not([readonly]){
   border-bottom: 1px solid #0097a7;
   box-shadow: 0 1px 0 0 #0097a7;
 }
 
-.dashboard{margin: 50px 0}
-.inline-form{display: flex;align-items: baseline;flex-wrap: wrap;}
-.inline-form input[type='text']{width: 50%;min-width: 150px; margin-right: 20px;}
-.text-left{text-align: left;}
-.button-section{display: flex;justify-content: space-around;flex-wrap: wrap;}
-.graph{width: 100%; max-height: 500px;margin-bottom: 50px}
+.dashboard{
+  margin: 50px 0
+}
+
+.inline-form{
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.inline-form input[type='text']{
+  width: 50%;
+  min-width: 150px;
+  margin-right: 20px;
+}
+
+.stat-section{
+  text-align: left;
+}
+
+.button-section{
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}
+
+.graph{
+  width: 100%;
+  max-height: 500px;
+  margin-bottom: 50px
+}
+
+.table-section{
+  text-align: center;
+  td,th{
+    text-align: center;
+  }
+}
+
+
+@media screen and (max-width: 768px) {
+  header h2{font-size: 35px;}
+  .dashboard{margin: 30px 0}
+}
+
+@media screen and (max-width:600px) {
+  .stat-section{text-align: center;}
+  .inline-form{justify-content: center;}
+  .graph{margin-top: 40px}
+}
+
+@media screen and (max-width: 425px) {
+  .dashboard{margin: 20px 0}
+}
